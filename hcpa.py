@@ -18,84 +18,70 @@ def get_base64_of_image(image_path):
         st.warning("Imagem do logo não encontrada. Usando placeholder.")
         return ""
 
-# CSS para temas claro e escuro
-def apply_theme(theme):
+# CSS para tema claro
+def apply_theme():
     st.markdown("""
         <style>
-            #MainMenu {visibility: hidden;}
-            header {visibility: hidden;}
-            footer {visibility: hidden;}
+            #MainMenu, header, footer {visibility: hidden;}
+            .main { background-color: #f5f7fa; padding: 20px; border-radius: 10px; }
+            .title { color: #1e3a8a; font-weight: bold; }
+            .subheader { color: #4b5e8e; }
+            .stButton>button {
+                background-color: #1e3a8a;
+                color: white;
+                border-radius: 8px;
+                padding: 10px 20px;
+                font-weight: bold;
+            }
+            .stButton>button:hover {
+                background-color: #3b82f6;
+                transition: 0.3s;
+            }
+            .stFileUploader { border: 2px dashed #d1d5db; border-radius: 10px; padding: 10px; }
+            .image-preview {
+                border-radius: 10px;
+                box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+                max-width: 100px !important; /* Limita a largura da imagem */
+                width: 100% !important;
+                margin: 0 auto !important;
+                display: block !important;
+            }
+            .error-message { background-color: #fee2e2; padding: 10px; border-radius: 8px; }
+            .success-message { background-color: #d1fae5; padding: 10px; border-radius: 8px; }
+            body, .stApp { background-color: #ffffff; }
+            /* Estiliza o container da imagem do Streamlit */
+            div[data-testid="stImage"] {
+                display: flex !important;
+                justify-content: center !important;
+                align-items: center !important;
+            }
+            /* Força o tamanho máximo da imagem */
+            div[data-testid="stImage"] img {
+                max-width: 400px !important;
+                width: 100% !important;
+                height: auto !important;
+                margin: 0 auto !important;
+                display: block !important;
+                border-radius: 10px;
+                box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            }
+
         </style>
     """, unsafe_allow_html=True)
-    
-    if theme == "Escuro":
-        st.markdown("""
-            <style>
-                .main { background-color: #1f2937; padding: 20px; border-radius: 10px; }
-                .title, .subheader, h1, h2, h3, p, div, span, label {
-                    color: #e5e7eb !important;
-                }
-                .stButton>button {
-                    background-color: #3b82f6;
-                    color: white;
-                    border-radius: 8px;
-                    padding: 10px 20px;
-                    font-weight: bold;
-                }
-                .stButton>button:hover {
-                    background-color: #60a5fa;
-                    transition: 0.3s;
-                }
-                .stFileUploader { 
-                    border: 2px dashed #4b5563; 
-                    border-radius: 10px; 
-                    padding: 10px; 
-                    background-color: #374151;
-                }
-                .image-preview { border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.3); }
-                .error-message { background-color: #991b1b; padding: 10px; border-radius: 8px; color: white; }
-                .success-message { background-color: #15803d; padding: 10px; border-radius: 8px; color: white; }
-                .stMarkdown, .stText { background-color: #374151; padding: 10px; border-radius: 8px; }
-                body, .stApp { background-color: #111827; }
-            </style>
-        """, unsafe_allow_html=True)
-    else:
-        st.markdown("""
-            <style>
-                .main { background-color: #f5f7fa; padding: 20px; border-radius: 10px; }
-                .title { color: #1e3a8a; font-weight: bold; }
-                .subheader { color: #4b5e8e; }
-                .stButton>button {
-                    background-color: #1e3a8a;
-                    color: white;
-                    border-radius: 8px;
-                    padding: 10px 20px;
-                    font-weight: bold;
-                }
-                .stButton>button:hover {
-                    background-color: #3b82f6;
-                    transition: 0.3s;
-                }
-                .stFileUploader { border: 2px dashed #d1d5db; border-radius: 10px; padding: 10px; }
-                .image-preview { border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
-                .error-message { background-color: #fee2e2; padding: 10px; border-radius: 8px; }
-                .success-message { background-color: #d1fae5; padding: 10px; border-radius: 8px; }
-                body, .stApp { background-color: #ffffff; }
-            </style>
-        """, unsafe_allow_html=True)
 
 # Inicializar chave do file_uploader
 if "uploader_key" not in st.session_state:
     st.session_state.uploader_key = str(uuid.uuid4())
 
-# Barra lateral com seleção de tema
+# Barra lateral com informações
 with st.sidebar:
     st.header("Sobre")
     st.info("Este aplicativo utiliza IA para descrever imagens médicas. Desenvolvido pelo HCPA.")
     st.markdown("---")
     st.subheader("Configurações")
-    theme = st.selectbox("Tema", ["Claro", "Escuro"])
-    apply_theme(theme)
+
+# Aplicar tema claro
+apply_theme()
 
 # Cabeçalho com logo
 image_path = "images/image_hcpa.png"
@@ -126,7 +112,7 @@ with st.container():
     # Exibir imagem se houver uma carregada
     if uploaded_file is not None:
         image = Image.open(uploaded_file)
-        st.image(image, caption="Pré-visualização da imagem", use_container_width=True, output_format="auto", clamp=True)
+        st.image(image, caption="Pré-visualização da imagem", use_container_width=True, output_format="auto", clamp=True, channels="RGB")
 
     # Botões Analisar e Limpar
     col1, col2 = st.columns(2)
