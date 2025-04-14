@@ -19,6 +19,18 @@ def get_base64_of_image(image_path):
 
 # CSS para temas claro e escuro
 def apply_theme(theme):
+
+    st.markdown("""
+
+        <style>
+            #MainMenu {visibility: hidden;}
+            header {visibility: hidden;}
+            # footer {visibility: hidden;}
+        </style>
+    """, unsafe_allow_html=True
+    )
+
+
     if theme == "Escuro":
         st.markdown("""
             <style>
