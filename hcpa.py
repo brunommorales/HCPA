@@ -3,6 +3,7 @@ import requests
 from PIL import Image
 import io
 import base64
+import uuid
 
 # Configuração inicial da página
 st.set_page_config(page_title="HCPA - Diagnósticos de Imagens", layout="centered")
@@ -19,18 +20,14 @@ def get_base64_of_image(image_path):
 
 # CSS para temas claro e escuro
 def apply_theme(theme):
-
     st.markdown("""
-
         <style>
             #MainMenu {visibility: hidden;}
             header {visibility: hidden;}
-            # footer {visibility: hidden;}
+            footer {visibility: hidden;}
         </style>
-    """, unsafe_allow_html=True
-    )
-
-
+    """, unsafe_allow_html=True)
+    
     if theme == "Escuro":
         st.markdown("""
             <style>
@@ -87,16 +84,20 @@ def apply_theme(theme):
             </style>
         """, unsafe_allow_html=True)
 
+# Inicializar chave do file_uploader
+if "uploader_key" not in st.session_state:
+    st.session_state.uploader_key = str(uuid.uuid4())
+
 # Barra lateral com seleção de tema
 with st.sidebar:
     st.header("Sobre")
-    st.info("Este aplicativo utiliza IA para descrever imagens médicas ou gerais. Desenvolvido pelo HCPA.")
+    st.info("Este aplicativo utiliza IA para descrever imagens médicas. Desenvolvido pelo HCPA.")
     st.markdown("---")
     st.subheader("Configurações")
     theme = st.selectbox("Tema", ["Claro", "Escuro"])
     apply_theme(theme)
 
-# Resto do código (mantido como no original, com o cabeçalho, upload e análise)
+# Cabeçalho com logo
 image_path = "images/image_hcpa.png"
 image_base64 = get_base64_of_image(image_path)
 
@@ -111,48 +112,54 @@ with st.container():
                 unsafe_allow_html=True
             )
 
-st.markdown("<p class='subheader'>Faça upload de uma imagem para análise automática com inteligência artificial.</p>", unsafe_allow_html=True)
+st.markdown("<p class='subheader'>Faça upload de uma imagem para análise.</p>", unsafe_allow_html=True)
 
+# Container para upload e botões
 with st.container():
     uploaded_file = st.file_uploader(
         "Escolha uma imagem (jpg, png, jpeg)",
         type=["jpg", "png", "jpeg"],
-        help="Arraste e solte ou clique para selecionar."
+        help="Arraste e solte ou clique para selecionar.",
+        key=st.session_state.uploader_key
     )
 
+    # Exibir imagem se houver uma carregada
     if uploaded_file is not None:
         image = Image.open(uploaded_file)
-        st.image(image, caption="Pré-visualização da imagem", use_column_width=True, output_format="auto", clamp=True)
+        st.image(image, caption="Pré-visualização da imagem", use_container_width=True, output_format="auto", clamp=True)
 
-        col1, col2 = st.columns(2)
-        with col1:
-            analyze_button = st.button("Analisar Imagem", key="analyze")
-        with col2:
-            clear_button = st.button("Limpar", key="clear")
+    # Botões Analisar e Limpar
+    col1, col2 = st.columns(2)
+    with col1:
+        analyze_button = st.button("Analisar Imagem", key="analyze")
+    with col2:
+        clear_button = st.button("Limpar", key="clear")
 
-        if clear_button:
-            st.session_state.uploaded_file = None
-            st.rerun()
+    # Lógica do botão Limpar
+    if clear_button:
+        st.session_state.uploader_key = str(uuid.uuid4())  # Alterar a chave para recriar o file_uploader
+        st.rerun()
 
-        if analyze_button:
-            with st.spinner("Analisando imagem..."):
-                try:
-                    img_byte_arr = io.BytesIO()
-                    image.save(img_byte_arr, format=image.format)
-                    img_byte_arr = img_byte_arr.getvalue()
+    # Lógica do botão Analisar
+    if analyze_button and uploaded_file is not None:
+        with st.spinner("Analisando imagem..."):
+            try:
+                img_byte_arr = io.BytesIO()
+                image.save(img_byte_arr, format=image.format)
+                img_byte_arr = img_byte_arr.getvalue()
 
-                    files = {"file": (uploaded_file.name, img_byte_arr, uploaded_file.type)}
-                    response = requests.post("http://localhost:8000/analyze", files=files)
+                files = {"file": (uploaded_file.name, img_byte_arr, uploaded_file.type)}
+                response = requests.post("http://localhost:8000/analyze", files=files)
 
-                    if response.status_code == 200:
-                        result = response.json()
-                        st.markdown("<div class='success-message'>✅ Análise concluída com sucesso!</div>", unsafe_allow_html=True)
-                        st.markdown("### Descrição da Imagem")
-                        st.markdown(f"<div style='padding: 15px; border-radius: 8px;'>{result['description']}</div>", unsafe_allow_html=True)
-                    else:
-                        st.markdown(f"<div class='error-message'>❌ Erro: {response.json().get('detail', 'Falha na análise')}</div>", unsafe_allow_html=True)
-                except Exception as e:
-                    st.markdown(f"<div class='error-message'>❌ Erro ao conectar com o backend: {str(e)}</div>", unsafe_allow_html=True)
+                if response.status_code == 200:
+                    result = response.json()
+                    st.markdown("<div class='success-message'>✅ Análise concluída com sucesso!</div>", unsafe_allow_html=True)
+                    st.markdown("### Descrição da Imagem")
+                    st.markdown(f"<div style='padding: 15px; border-radius: 8px;'>{result['description']}</div>", unsafe_allow_html=True)
+                else:
+                    st.markdown(f"<div class='error-message'>❌ Erro: {response.json().get('detail', 'Falha na análise')}</div>", unsafe_allow_html=True)
+            except Exception as e:
+                st.markdown(f"<div class='error-message'>❌ Erro ao conectar com o backend: {str(e)}</div>", unsafe_allow_html=True)
 
 st.markdown("---")
 st.markdown("<p style='text-align: center; color: #6b7280;'>HCPA © 2025</p>", unsafe_allow_html=True)
