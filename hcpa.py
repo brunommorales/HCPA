@@ -85,7 +85,7 @@ with st.sidebar:
     apply_theme(theme)
 
 # Resto do código (mantido como no original, com o cabeçalho, upload e análise)
-image_path = "image_hcpa.png"
+image_path = "images/image_hcpa.png"
 image_base64 = get_base64_of_image(image_path)
 
 with st.container():
