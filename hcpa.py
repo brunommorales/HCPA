@@ -19,8 +19,8 @@ def get_base64_of_image(image_path):
         return ""
 
 # CSS para tema claro
-def apply_theme():
-    st.markdown("""
+def light_theme():
+    return """
         <style>
             #MainMenu, header, footer {visibility: hidden;}
             .main { background-color: #f5f7fa; padding: 20px; border-radius: 10px; }
@@ -41,21 +41,19 @@ def apply_theme():
             .image-preview {
                 border-radius: 10px;
                 box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-                max-width: 100px !important; /* Limita a largura da imagem */
+                max-width: 100px !important;
                 width: 100% !important;
                 margin: 0 auto !important;
                 display: block !important;
             }
             .error-message { background-color: #fee2e2; padding: 10px; border-radius: 8px; }
             .success-message { background-color: #d1fae5; padding: 10px; border-radius: 8px; }
-            body, .stApp { background-color: #ffffff; }
-            /* Estiliza o container da imagem do Streamlit */
+            body, .stApp { background-color: #ffffff; color: #1f2937; }
             div[data-testid="stImage"] {
                 display: flex !important;
                 justify-content: center !important;
                 align-items: center !important;
             }
-            /* Força o tamanho máximo da imagem */
             div[data-testid="stImage"] img {
                 max-width: 400px !important;
                 width: 100% !important;
@@ -65,22 +63,85 @@ def apply_theme():
                 border-radius: 10px;
                 box-shadow: 0 4px 8px rgba(0,0,0,0.1);
             }
-
         </style>
-    """, unsafe_allow_html=True)
+    """
+
+# CSS para tema escuro
+def dark_theme():
+    return """
+        <style>
+            #MainMenu, header, footer {visibility: hidden;}
+            .main { background-color: #374151; padding: 20px; border-radius: 10px; }
+            .title { color: #60a5fa; font-weight: bold; }
+            .subheader { color: #9ca3af; }
+            .stButton>button {
+                background-color: #60a5fa;
+                color: #1f2937;
+                border-radius: 8px;
+                padding: 10px 20px;
+                font-weight: bold;
+            }
+            .stButton>button:hover {
+                background-color: #3b82f6;
+                color: #ffffff;
+                transition: 0.3s;
+            }
+            .stFileUploader { border: 2px dashed #4b5563; border-radius: 10px; padding: 10px; }
+            .image-preview {
+                border-radius: 10px;
+                box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+                max-width: 100px !important;
+                width: 100% !important;
+                margin: 0 auto !important;
+                display: block !important;
+            }
+            .error-message { background-color: #7f1d1d; color: #f3f4f6; padding: 10px; border-radius: 8px; }
+            .success-message { background-color: #064e3b; color: #f3f4f6; padding: 10px; border-radius: 8px; }
+            body, .stApp { background-color: #1f2937; color: #f3f4f6; }
+            div[data-testid="stImage"] {
+                display: flex !important;
+                justify-content: center !important;
+                align-items: center !important;
+            }
+            div[data-testid="stImage"] img {
+                max-width: 400px !important;
+                width: 100% !important;
+                height: auto !important;
+                margin: 0 auto !important;
+                display: block !important;
+                border-radius: 10px;
+                box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+            }
+        </style>
+    """
+
+# Função para aplicar o tema com base no estado
+def apply_theme():
+    if st.session_state.theme == "dark":
+        st.markdown(dark_theme(), unsafe_allow_html=True)
+    else:
+        st.markdown(light_theme(), unsafe_allow_html=True)
+
+# Inicializar estado do tema
+if "theme" not in st.session_state:
+    st.session_state.theme = "light"
 
 # Inicializar chave do file_uploader
 if "uploader_key" not in st.session_state:
     st.session_state.uploader_key = str(uuid.uuid4())
 
-# Barra lateral com informações
+# Barra lateral com informações e botão de tema
 with st.sidebar:
     st.header("Sobre")
     st.info("Este aplicativo utiliza IA para descrever imagens médicas. Desenvolvido pelo HCPA.")
     st.markdown("---")
     st.subheader("Configurações")
+    # Botão para alternar tema
+    if st.button("Tema Escuro" if st.session_state.theme == "light" else "Tema Claro"):
+        st.session_state.theme = "dark" if st.session_state.theme == "light" else "light"
+        st.rerun()
 
-# Aplicar tema claro
+# Aplicar tema
 apply_theme()
 
 # Cabeçalho com logo
