@@ -1,9 +1,13 @@
+from backend.retinopathy_analyzer import RetinopathyAnalyzer
+from backend.preprocess import resize_and_center_fundus
+from PIL import Image
 import streamlit as st
 import requests
-from PIL import Image
 import io
 import base64
 import uuid
+import numpy as np
+import os
 
 # Configuração inicial da página
 st.set_page_config(page_title="HCPA - Diagnósticos de Imagens", layout="centered")
@@ -188,25 +192,41 @@ with st.container():
         st.rerun()
 
     # Lógica do botão Analisar
+    analyzer = RetinopathyAnalyzer("models/inceptionv3-1.0.0.keras")
     if analyze_button and uploaded_file is not None:
         with st.spinner("Analisando imagem..."):
             try:
-                img_byte_arr = io.BytesIO()
-                image.save(img_byte_arr, format=image.format)
-                img_byte_arr = img_byte_arr.getvalue()
+                temp_dir = "temp_images"
+                os.makedirs(temp_dir, exist_ok=True)
+                
+                # Generate a unique filename
+                temp_image_path = os.path.join(temp_dir, f"upload_{uploaded_file.name}")
+                
+                # Save the uploaded image to a temporary file
+                image.save(temp_image_path, format=image.format)
+                
+                # Process the image using the file path
+                processed_image = resize_and_center_fundus(save_path=temp_image_path, image_path=temp_image_path)
+                
+                # # Initialize analyzer and make prediction
+                if(processed_image):
+                    processed_filename = f"upload_{uploaded_file.name}"
+                    processed_image_path = os.path.join(temp_dir, processed_filename)
+                    processed_image = Image.open(processed_image_path)
+                    processed_array = np.array(processed_image)
+                    processed_array = np.expand_dims(processed_array, axis=0)
+                    prediction = analyzer.predict(processed_array)
 
-                files = {"file": (uploaded_file.name, img_byte_arr, uploaded_file.type)}
-                response = requests.post("http://localhost:8000/analyze", files=files)
-
-                if response.status_code == 200:
-                    result = response.json()
-                    st.markdown("<div class='success-message'>✅ Análise concluída com sucesso!</div>", unsafe_allow_html=True)
-                    st.markdown("### Descrição da Imagem")
-                    st.markdown(f"<div style='padding: 15px; border-radius: 8px;'>{result['description']}</div>", unsafe_allow_html=True)
-                else:
-                    st.markdown(f"<div class='error-message'>❌ Erro: {response.json().get('detail', 'Falha na análise')}</div>", unsafe_allow_html=True)
+                # Exibição do resultado
+                st.markdown("<div class='success-message'>✅ Análise concluída com sucesso!</div>", unsafe_allow_html=True)
+                st.markdown("### Descrição da Imagem")
+                st.markdown(f"<div style='padding: 15px; border-radius: 8px;'>Predição do modelo: {prediction[0][0]}</div>", unsafe_allow_html=True)
             except Exception as e:
-                st.markdown(f"<div class='error-message'>❌ Erro ao conectar com o backend: {str(e)}</div>", unsafe_allow_html=True)
+                st.markdown(f"<div class='error-message'>❌ Erro ao processar imagem: {str(e)}</div>", unsafe_allow_html=True)
+            finally:
+                for temp_file in [temp_image_path, processed_image_path]:
+                    if 'temp_file' in locals() and os.path.exists(temp_file):
+                        os.remove(temp_file)
 
 st.markdown("---")
 st.markdown("<p style='text-align: center; color: #6b7280;'>HCPA © 2025</p>", unsafe_allow_html=True)
