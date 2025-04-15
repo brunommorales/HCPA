@@ -9,7 +9,7 @@ import os
 import tempfile
 
 # Configuração da página
-st.set_page_config(page_title="HCPA - Diagnóstico de Imagens", layout="centered")
+st.set_page_config(page_title="HCPA", layout="centered")
 
 # ============================ FUNÇÕES AUXILIARES ============================
 
@@ -37,10 +37,10 @@ def show_header(image_path):
     image_base64 = get_base64_of_image(image_path)
     col1, col2 = st.columns([3, 1])
     with col1:
-        st.markdown("<h1 class='title'>HCPA - Diagnóstico de Imagens</h1>", unsafe_allow_html=True)
+        st.markdown("<h1 class='title'>Predição do Encaminhamento de Retinopatia Diabética</h1>", unsafe_allow_html=True)
     with col2:
         if image_base64:
-            st.markdown(f"<img src='data:image/png;base64,{image_base64}' style='height: 60px;'>", unsafe_allow_html=True)
+            st.markdown(f"<img src='data:image/png;base64,{image_base64}' style='height: 168px;'>", unsafe_allow_html=True)
 
 def clear_file_uploader():
     st.session_state["uploader_key"] = str(uuid.uuid4())
@@ -90,7 +90,7 @@ with st.sidebar:
 
 # ============================ TOPO ============================
 
-show_header("images/image_hcpa.png")
+show_header("images/hcpa.jpg")
 st.markdown("<p class='subheader'>Faça upload de uma imagem para análise.</p>", unsafe_allow_html=True)
 
 # ============================ UPLOAD ============================
