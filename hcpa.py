@@ -149,12 +149,16 @@ if uploaded_file:
 
 # ============================ BOTÕES ============================
 
-col1, col2 = st.columns(2)
-with col1:
-    analyze_button = st.button("Analisar Imagem", key="analyze")
-with col2:
-    if st.button("Limpar", key="clear"):
-        clear_file_uploader()
+# col1, col2 = st.columns(2)
+# with col1:
+#     analyze_button = st.button("Analisar Imagem", key="analyze")
+# with col2:
+#     if st.button("Limpar", key="clear"):
+#         clear_file_uploader()
+st.markdown("<div style:'text-align: center;'>", unsafe_allow_html=True)
+analyze_button = st.button("Analisar Imagem", key="analyze")
+
+st.markdown("</div>", unsafe_allow_html=True)
 
 # ============================ ANÁLISE ============================
 

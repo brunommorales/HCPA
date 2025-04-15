@@ -32,6 +32,7 @@ body, .stApp {
 }
 .stButton>button:hover {
     background-color: #3b82f6; /* Slight hover effect */
+    border-color: #3b82f6 !important; 
     color: #ffffff;
 }
 
