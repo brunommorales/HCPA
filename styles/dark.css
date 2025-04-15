@@ -1,0 +1,128 @@
+/* General Styling */
+#MainMenu, header, footer { visibility: hidden; }
+body, .stApp {
+    background-color: #1f2937; /* Dark background */
+    color: #f3f4f6; /* Light text for readability */
+}
+
+/* Main content area */
+.main {
+    background-color: #374151; /* Darker background for content */
+    padding: 20px;
+    border-radius: 10px;
+}
+
+/* Titles and Headers */
+.title {
+    color: #60a5fa; /* Bright accent color for titles */
+    font-weight: bold;
+}
+.subheader {
+    color: #9ca3af; /* Lighter color for subheadings */
+}
+
+/* Buttons */
+.stButton>button {
+    background-color: #60a5fa; /* Lighter blue for better contrast */
+    color: #1f2937;
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+.stButton>button:hover {
+    background-color: #3b82f6; /* Slight hover effect */
+    color: #ffffff;
+}
+
+/* File Uploader */
+.stFileUploader {
+    border: 2px dashed #4b5563;
+    border-radius: 10px;
+    padding: 10px;
+    background-color: #4b5563; /* Darker background for the uploader */
+}
+
+/* File Uploader Text */
+.stFileUploader label {
+    color: #f3f4f6 !important;
+    font-weight: bold;
+}
+
+/* File Uploader Icon */
+.stFileUploader svg {
+    fill: #4b5563 !important; /* Adjusted to a darker color for visibility */
+    width: 30px !important; /* Icon size */
+    height: 30px !important; /* Icon size */
+}
+
+/* Image Preview */
+.image-preview {
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    max-width: 100px !important;
+    width: 100% !important;
+    margin: 0 auto !important;
+    display: block !important;
+}
+
+/* Success & Error Messages */
+.error-message {
+    background-color: #7f1d1d; /* Darker red for errors */
+    color: #f3f4f6; /* Light text for error messages */
+    padding: 10px;
+    border-radius: 8px;
+}
+.success-message {
+    background-color: #064e3b; /* Dark green for success */
+    color: #f3f4f6; /* Light text for success messages */
+    padding: 10px;
+    border-radius: 8px;
+}
+
+/* Image Display */
+div[data-testid="stImage"] {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+}
+div[data-testid="stImage"] img {
+    max-width: 400px !important;
+    width: 100% !important;
+    height: auto !important;
+    margin: 0 auto !important;
+    display: block !important;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+
+/* Markdown Styles */
+.markdown {
+    color: #f3f4f6; /* Light text for markdown */
+}
+
+/* Headers */
+.markdown h1, .markdown h2, .markdown h3, .markdown h4, .markdown h5, .markdown h6 {
+    color: #60a5fa; /* Bright headers to match the title color */
+    font-weight: bold;
+}
+
+/* Links */
+.markdown a {
+    color: #3b82f6; /* Blue links */
+    text-decoration: none;
+}
+.markdown a:hover {
+    color: #2563eb; /* Darker blue on hover */
+}
+
+/* Code Snippets */
+.markdown pre, .markdown code {
+    background-color: #4b5563; /* Dark background for code blocks */
+    color: #f3f4f6; /* Light text for code */
+    border-radius: 5px;
+    padding: 5px 10px;
+}
+.markdown pre {
+    padding: 10px;
+}
