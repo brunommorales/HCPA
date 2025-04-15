@@ -122,8 +122,23 @@ with st.sidebar:
     st.header("Sobre")
     st.info("Este aplicativo utiliza IA para descrever imagens médicas. Desenvolvido pelo HCPA.")
     st.subheader("Configurações")
-    if st.button("Tema Escuro" if st.session_state.theme == "light" else "Tema Claro"):
-        st.session_state.theme = "dark" if st.session_state.theme == "light" else "light"
+    # if st.button("Tema Escuro" if st.session_state.theme == "light" else "Tema Claro"):
+    #     st.session_state.theme = "dark" if st.session_state.theme == "light" else "light"
+    #     st.rerun()
+
+# Garantir valor inicial no session_state
+    if "theme_select" not in st.session_state:
+        st.session_state.theme_select = "Claro" if st.session_state.theme == "light" else "Escuro"
+
+    # Interface do seletor de tema
+    selected_label = st.selectbox("Tema", ["Claro", "Escuro"], key="theme_select")
+
+    # Determinar novo tema
+    selected_theme = "light" if selected_label == "Claro" else "dark"
+
+    # Atualizar tema apenas se necessário
+    if selected_theme != st.session_state.theme:
+        st.session_state.theme = selected_theme
         st.rerun()
 
 # ============================ TOPO ============================
@@ -157,7 +172,6 @@ if uploaded_file:
 #         clear_file_uploader()
 st.markdown("<div style:'text-align: center;'>", unsafe_allow_html=True)
 analyze_button = st.button("Analisar Imagem", key="analyze")
-
 st.markdown("</div>", unsafe_allow_html=True)
 
 # ============================ ANÁLISE ============================
