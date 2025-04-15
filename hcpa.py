@@ -66,12 +66,50 @@ def analyze_image(image_path, analyzer):
             processed_array = np.expand_dims(np.array(processed_image), axis=0)
 
             prediction = analyzer.predict(processed_array)
+            probability = prediction[0][0]
 
-            st.markdown("<div class='success-message'>✅ Análise concluída com sucesso!</div>", unsafe_allow_html=True)
-            st.markdown("### Descrição da Imagem")
-            st.markdown(f"<div style='padding: 15px; border-radius: 8px;'>Predição do modelo: {prediction[0][0]}</div>", unsafe_allow_html=True)
+            # Tradução da probabilidade para recomendação
+            if probability >= 0.8:
+                recommendation = "🔴 **Alta recomendação de encaminhamento.**"
+                color = "#ef4444"  # Vermelho
+            elif 0.5 <= probability < 0.8:
+                recommendation = "🟠 **Recomendação moderada de encaminhamento.**"
+                color = "#f59e0b"  # Laranja
+            else:
+                recommendation = "🟢 **Baixa recomendação de encaminhamento.**"
+                color = "#22c55e"  # Verde
+
+            st.markdown(f"""
+                <div style='
+                    background-color: {color}20;
+                    color: {color};
+                    border: 1px solid {color};
+                    padding: 15px;
+                    border-radius: 10px;
+                    margin-top: 20px;
+                    font-weight: bold;
+                    font-size: 16px;
+                '>
+                    ✅ Análise concluída com sucesso! <br><br>
+                    📈 Probabilidade de encaminhamento: <strong>{probability:.2%}</strong><br>
+                    {recommendation}
+                </div>
+            """, unsafe_allow_html=True)
+
         except Exception as e:
-            st.markdown(f"<div class='error-message'>❌ Erro ao processar imagem: {str(e)}</div>", unsafe_allow_html=True)
+            st.markdown(f"""
+                <div style='
+                    background-color: #f8717120;
+                    color: #b91c1c;
+                    border: 1px solid #b91c1c;
+                    padding: 15px;
+                    border-radius: 10px;
+                    margin-top: 20px;
+                    font-weight: bold;
+                '>
+                    ❌ Erro ao processar imagem: {str(e)}
+                </div>
+            """, unsafe_allow_html=True)
 
 # ============================ INICIALIZAÇÃO ============================
 
