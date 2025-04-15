@@ -87,7 +87,7 @@ div[data-testid="stImage"] {
     align-items: center !important;
 }
 div[data-testid="stImage"] img {
-    max-width: 400px !important;
+    max-width: 150px !important;
     width: 100% !important;
     height: auto !important;
     margin: 0 auto !important;
