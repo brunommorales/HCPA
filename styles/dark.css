@@ -33,6 +33,18 @@ body, .stApp {
 .stButton>button:hover {
     background-color: #3b82f6; /* Slight hover effect */
     color: #ffffff;
+        border-color: #3b82f6 !important; 
+}
+
+
+.stButton>button:focus {
+    background-color: #3b82f6; /* Slight hover effect */
+    border-color: #3b82f6 !important; 
+    color: white;
+}
+
+.stButton>button:focus:not(:active){
+    color: white;
 }
 
 /* File Uploader */
