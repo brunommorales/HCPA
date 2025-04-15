@@ -1,6 +1,6 @@
 from backend.retinopathy_analyzer import RetinopathyAnalyzer
 from backend.preprocess import resize_and_center_fundus
-from PIL import Image
+from PIL import Image, UnidentifiedImageError
 import streamlit as st
 import base64
 import uuid
@@ -8,11 +8,13 @@ import numpy as np
 import os
 import tempfile
 
-# Configuração da página
+# ============================ CONFIGURAÇÃO DA PÁGINA ============================
+
 st.set_page_config(page_title="HCPA", layout="centered")
 
 # ============================ FUNÇÕES AUXILIARES ============================
 
+@st.cache_data
 def get_base64_of_image(image_path):
     try:
         with open(image_path, "rb") as f:
@@ -48,16 +50,21 @@ def clear_file_uploader():
     st.session_state["preprocessed_path"] = None
 
 def preprocess_uploaded_image(uploaded_file):
-    with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as tmp:
-        image = Image.open(uploaded_file)
-        image.save(tmp.name)
+    try:
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as tmp:
+            image = Image.open(uploaded_file)
+            image = image.convert("RGB")  # Garantir formato
+            image.save(tmp.name)
 
-        success = resize_and_center_fundus(save_path=tmp.name, image_path=tmp.name)
-        if not success:
-            st.error("Falha ao pré-processar a imagem.")
-            return None
+            success = resize_and_center_fundus(save_path=tmp.name, image_path=tmp.name)
+            if not success:
+                st.error("Falha ao pré-processar a imagem.")
+                return None
 
-        return tmp.name  # Path to preprocessed image
+            return tmp.name
+    except UnidentifiedImageError:
+        st.error("Arquivo enviado não é uma imagem válida.")
+        return None
 
 def analyze_image(image_path, analyzer):
     with st.spinner("Analisando imagem..."):
@@ -68,16 +75,15 @@ def analyze_image(image_path, analyzer):
             prediction = analyzer.predict(processed_array)
             probability = prediction[0][0]
 
-            # Tradução da probabilidade para recomendação
             if probability >= 0.8:
                 recommendation = "🔴 **Alta recomendação de encaminhamento.**"
-                color = "#ef4444"  # Vermelho
+                color = "#ef4444"
             elif 0.5 <= probability < 0.8:
                 recommendation = "🟠 **Recomendação moderada de encaminhamento.**"
-                color = "#f59e0b"  # Laranja
+                color = "#f59e0b"
             else:
                 recommendation = "🟢 **Baixa recomendação de encaminhamento.**"
-                color = "#22c55e"  # Verde
+                color = "#22c55e"
 
             st.markdown(f"""
                 <div style='
@@ -122,21 +128,13 @@ with st.sidebar:
     st.header("Sobre")
     st.info("Este aplicativo utiliza IA para descrever imagens médicas. Desenvolvido pelo HCPA.")
     st.subheader("Configurações")
-    # if st.button("Tema Escuro" if st.session_state.theme == "light" else "Tema Claro"):
-    #     st.session_state.theme = "dark" if st.session_state.theme == "light" else "light"
-    #     st.rerun()
 
-# Garantir valor inicial no session_state
     if "theme_select" not in st.session_state:
         st.session_state.theme_select = "Claro" if st.session_state.theme == "light" else "Escuro"
 
-    # Interface do seletor de tema
     selected_label = st.selectbox("Tema", ["Claro", "Escuro"], key="theme_select")
-
-    # Determinar novo tema
     selected_theme = "light" if selected_label == "Claro" else "dark"
 
-    # Atualizar tema apenas se necessário
     if selected_theme != st.session_state.theme:
         st.session_state.theme = selected_theme
         st.rerun()
@@ -158,25 +156,21 @@ uploaded_file = st.file_uploader(
 if uploaded_file:
     st.session_state["uploaded_file"] = uploaded_file
     st.image(Image.open(uploaded_file), caption="Pré-visualização da imagem", use_container_width=True)
-
-    # Pré-processamento imediato
     st.session_state["preprocessed_path"] = preprocess_uploaded_image(uploaded_file)
 
-# ============================ BOTÕES ============================
+# ============================ MODELO ============================
 
-# col1, col2 = st.columns(2)
-# with col1:
-#     analyze_button = st.button("Analisar Imagem", key="analyze")
-# with col2:
-#     if st.button("Limpar", key="clear"):
-#         clear_file_uploader()
-st.markdown("<div style:'text-align: center;'>", unsafe_allow_html=True)
+@st.cache_resource
+def load_model():
+    return RetinopathyAnalyzer("models/inceptionv3-1.0.0.keras")
+
+analyzer = load_model()
+
+# ============================ BOTÃO E ANÁLISE ============================
+
+st.markdown("<div style='text-align: center;'>", unsafe_allow_html=True)
 analyze_button = st.button("Analisar Imagem", key="analyze")
 st.markdown("</div>", unsafe_allow_html=True)
-
-# ============================ ANÁLISE ============================
-
-analyzer = RetinopathyAnalyzer("models/inceptionv3-1.0.0.keras")
 
 if analyze_button and st.session_state.get("preprocessed_path"):
     analyze_image(st.session_state["preprocessed_path"], analyzer)
