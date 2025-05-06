@@ -21,9 +21,9 @@ body, .stApp {
     color: #1f2937; /* Subtle blue-gray for subheadings */
 }
 
-/* Buttons */
+/* Button Analisar Imagem */
 .stButton>button {
-    background-color: #1e3a8a; /* Dark blue for buttons */
+    background-color: #1e3a8a !important; /* Dark blue for buttons */
     color: white;
     border-radius: 8px;
     padding: 10px 20px;
@@ -31,20 +31,27 @@ body, .stApp {
     transition: background-color 0.3s ease;
 }
 .stButton>button:hover {
-    background-color: #3b82f6; /* Slight hover effect */
-    border-color: #3b82f6 !important; 
-    color: #ffffff;
+    background-color: #3b82f6  !important; /* Slight hover effect */
+    border-color: #ffffff !important; 
+    color: white ;
 }
 
 .stButton>button:focus {
     background-color: #3b82f6; /* Slight hover effect */
     border-color: #3b82f6 !important; 
-    color: #000000;
+    color: #ffffff;
 }
 
 .stButton>button:focus:not(:active){
-    color: black;
+    color:#3b82f6 !important;
 }
+
+/* Sobscrevi o button Browse files usando a class dinamica,  */
+/* button[class^="st-emotion-cache-"]:hover {
+    border-color: rgb(0, 0, 0) !important;
+    color: rgb(0, 0, 0) !important;
+    /* background-color: #ffffff !important; }*/
+
 
 /* File Uploader */
 .stFileUploader {
@@ -62,7 +69,7 @@ body, .stApp {
 
 /* File Uploader Icon (updated for visibility) */
 .stFileUploader svg {
-    fill: #1e3a8a !important; /* Dark blue for icon to stand out */
+    /* fill: #1e3a8a !important; Dark blue for icon to stand out */
     width: 30px !important; /* Icon size */
     height: 30px !important; /* Icon size */
 }
