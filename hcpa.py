@@ -51,17 +51,15 @@ def clear_file_uploader():
 
 def preprocess_uploaded_image(uploaded_file):
     try:
-        with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as tmp:
-            image = Image.open(uploaded_file)
-            image = image.convert("RGB")  # Garantir formato
-            image.save(tmp.name)
+        pil_image = Image.open(uploaded_file).convert("RGB")
+        processed = resize_and_center_fundus_in_memory(pil_image, diameter=299)
 
-            success = resize_and_center_fundus(save_path=tmp.name, image_path=tmp.name)
-            if not success:
-                st.error("Falha ao pré-processar a imagem.")
-                return None
+        if processed is None:
+            st.error("Falha ao pré-processar a imagem.")
+            return None
 
-            return tmp.name
+        return Image.fromarray(processed)
+
     except UnidentifiedImageError:
         st.error("Arquivo enviado não é uma imagem válida.")
         return None
