@@ -1,6 +1,8 @@
 from pylab import array, arange, uint8
+from PIL import Image
 import cv2
 import matplotlib
+import numpy as np
 import os
 import sys
 import tensorflow as tf
@@ -164,6 +166,24 @@ def _resize_and_center_fundus(image, diameter):
                               value=[0, 0, 0])
     # Return the image.
     return copy
+
+def resize_and_center_fundus_in_memory(pil_image, diameter=299):
+    """
+    Process a PIL image in memory (no file I/O), returning a processed NumPy array.
+
+    :param pil_image: PIL.Image object
+    :param diameter: Diameter to resize and center the fundus
+    :return: Processed image as NumPy array, or None if it fails
+    """
+    image = cv2.cvtColor(np.array(pil_image), cv2.COLOR_RGB2BGR)
+
+    processed = _resize_and_center_fundus(image, diameter=diameter)
+
+    if processed is None:
+        return None
+
+    processed_rgb = cv2.cvtColor(processed, cv2.COLOR_BGR2RGB)
+    return processed_rgb
 
 def resize_and_center_fundus(save_path=None, images_path=None, image_paths=None,
                     image_path=None, diameter=299, verbosity=1):
