@@ -1,5 +1,5 @@
 from backend.retinopathy_analyzer import RetinopathyAnalyzer
-from backend.preprocess import resize_and_center_fundus
+from backend.preprocess import resize_and_center_fundus_in_memory
 from PIL import Image, UnidentifiedImageError
 import streamlit as st
 import base64
