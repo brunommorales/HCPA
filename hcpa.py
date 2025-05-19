@@ -33,7 +33,7 @@ def initialize_states():
     st.session_state.setdefault("theme", "light")
     st.session_state.setdefault("uploader_key", str(uuid.uuid4()))
     st.session_state.setdefault("uploaded_file", None)
-    st.session_state.setdefault("preprocessed_path", None)
+    st.session_state.setdefault("preprocessed_image", None)
 
 def show_header(image_path):
     image_base64 = get_base64_of_image(image_path)
@@ -47,7 +47,7 @@ def show_header(image_path):
 def clear_file_uploader():
     st.session_state["uploader_key"] = str(uuid.uuid4())
     st.session_state["uploaded_file"] = None
-    st.session_state["preprocessed_path"] = None
+    st.session_state["preprocessed_image"] = None
 
 def preprocess_uploaded_image(uploaded_file):
     try:
@@ -64,11 +64,10 @@ def preprocess_uploaded_image(uploaded_file):
         st.error("Arquivo enviado não é uma imagem válida.")
         return None
 
-def analyze_image(image_path, analyzer):
+def analyze_image(pil_image, analyzer):
     with st.spinner("Analisando imagem..."):
         try:
-            processed_image = Image.open(image_path)
-            processed_array = np.expand_dims(np.array(processed_image), axis=0)
+            processed_array = np.expand_dims(np.array(pil_image), axis=0)
 
             prediction = analyzer.predict(processed_array)
             probability = prediction[0][0]
@@ -154,7 +153,7 @@ uploaded_file = st.file_uploader(
 if uploaded_file:
     st.session_state["uploaded_file"] = uploaded_file
     st.image(Image.open(uploaded_file), caption="Pré-visualização da imagem", use_container_width=True)
-    st.session_state["preprocessed_path"] = preprocess_uploaded_image(uploaded_file)
+    st.session_state["preprocessed_image"] = preprocess_uploaded_image(uploaded_file)
 
 # ============================ MODELO ============================
 
@@ -170,8 +169,8 @@ st.markdown("<div style='text-align: center;'>", unsafe_allow_html=True)
 analyze_button = st.button("Analisar Imagem", key="analyze")
 st.markdown("</div>", unsafe_allow_html=True)
 
-if analyze_button and st.session_state.get("preprocessed_path"):
-    analyze_image(st.session_state["preprocessed_path"], analyzer)
+if analyze_button and st.session_state.get("preprocessed_image"):
+    analyze_image(st.session_state["preprocessed_image"], analyzer)
 
 # ============================ RODAPÉ ============================
 
