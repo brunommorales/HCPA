@@ -173,7 +173,7 @@ def load_model():
 
 analyzer = load_model()
 
-if st.button("🔍 Analisar Imagens", type="primary") and st.session_state.get("uploaded_files"):
+if st.button("Analisar Imagens", type="primary") and st.session_state.get("uploaded_files"):
     results = []
     progress_bar = st.progress(0)
     
@@ -204,4 +204,3 @@ if st.button("🔍 Analisar Imagens", type="primary") and st.session_state.get("
 
 # ============================ FOOTER ============================
 st.markdown("---")
-st.markdown("<p style='text-align: center; color: #6b7280;'>HCPA © 2025</p>", unsafe_allow_html=True)

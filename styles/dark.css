@@ -1,30 +1,25 @@
-/* ============== DARK MODE BASE STYLES ============== */
 :root {
-  /* Medical Dark Color Palette */
-  --primary: #60a5fa;         /* Softer blue for dark mode */
+  --primary: #60a5fa;
   --primary-hover: #3b82f6;
   --primary-light: #1e3a8a;
-  --text: #f3f4f6;           /* Light gray for readability */
+  --text: #f3f4f6;
   --text-light: #9ca3af;
-  --bg: #111827;             /* Deep navy background */
-  --bg-secondary: #1f2937;   /* Darker containers */
-  --border: #374151;         /* Subtle borders */
+  --bg: #111827;
+  --bg-secondary: #1f2937;
+  --border: #374151;
   
-  /* Clinical Status Colors */
-  --low-risk: #34d399;       /* Softer green */
+  --low-risk: #34d399;
   --low-risk-bg: #064e3b;
-  --moderate-risk: #fbbf24;  /* Amber */
+  --moderate-risk: #fbbf24;
   --moderate-risk-bg: #78350f;
-  --high-risk: #f87171;      /* Soft red */
+  --high-risk: #f87171;
   --high-risk-bg: #7f1d1d;
   
-  /* Metrics */
-  --radius: 10px;            /* Matches light mode */
+  --radius: 10px;
   --shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
   --transition: all 0.25s ease;
 }
 
-/* ============== DARK MODE OVERRIDES ============== */
 body, .stApp {
   background-color: var(--bg);
   color: var(--text);
@@ -32,7 +27,6 @@ body, .stApp {
   line-height: 1.6;
 }
 
-/* ============== TYPOGRAPHY ============== */
 .title {
   color: var(--primary);
   font-weight: 700;
@@ -48,8 +42,6 @@ body, .stApp {
   margin-bottom: 1.75rem;
 }
 
-/* ============== COMPONENTS ============== */
-/* Main Container */
 .main {
   background-color: var(--bg-secondary);
   border-radius: var(--radius);
@@ -58,7 +50,6 @@ body, .stApp {
   border: 1px solid var(--border);
 }
 
-/* Metrics Cards */
 .stMetric {
   background-color: var(--bg-secondary) !important;
   border: 1px solid var(--border) !important;
@@ -79,7 +70,6 @@ body, .stApp {
   font-size: 1.6rem !important;
 }
 
-/* Buttons */
 .stButton>button {
   background-color: var(--primary) !important;
   color: #111827 !important;
@@ -99,7 +89,6 @@ body, .stApp {
   box-shadow: 0 4px 6px rgba(59, 130, 246, 0.2) !important;
 }
 
-/* File Uploader */
 .stFileUploader {
   border: 2px dashed var(--border) !important;
   background-color: rgba(30, 58, 138, 0.2) !important;
@@ -118,7 +107,6 @@ body, .stApp {
   font-weight: 600 !important;
 }
 
-/* Images */
 div[data-testid="stImage"] img {
   max-width: 100% !important;
   border: 1px solid var(--border) !important;
@@ -127,7 +115,6 @@ div[data-testid="stImage"] img {
   box-shadow: var(--shadow) !important;
 }
 
-/* Results Containers */
 .result-container {
   background-color: var(--bg-secondary) !important;
   border: 1px solid var(--border) !important;
@@ -137,7 +124,6 @@ div[data-testid="stImage"] img {
   box-shadow: var(--shadow) !important;
 }
 
-/* Risk Indicators */
 .low-risk {
   color: var(--low-risk) !important;
   background-color: rgba(4, 120, 87, 0.2) !important;
@@ -162,7 +148,6 @@ div[data-testid="stImage"] img {
   align-items: center;
 }
 
-/* Status Messages */
 .error-message {
   border-left: 5px solid var(--high-risk) !important;
   background-color: rgba(185, 28, 28, 0.1) !important;
@@ -178,7 +163,6 @@ div[data-testid="stImage"] img {
   background-color: rgba(122, 59, 15, 0.1) !important;
 }
 
-/* Form Elements */
 .stSelectbox, .stTextInput, .stNumberInput {
   background-color: var(--bg-secondary) !important;
   color: var(--text) !important;
@@ -192,7 +176,6 @@ div[data-testid="stImage"] img {
   background-color: var(--bg-secondary) !important;
 }
 
-/* Markdown Content */
 .markdown {
   color: var(--text);
 }
@@ -217,7 +200,6 @@ div[data-testid="stImage"] img {
   border-radius: var(--radius) !important;
 }
 
-/* ============== UTILITY CLASSES ============== */
 .text-primary {
   color: var(--primary) !important;
 }
