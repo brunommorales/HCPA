@@ -88,7 +88,6 @@ def display_single_result(prob):
     """, unsafe_allow_html=True)
 
 def display_batch_results(results):
-    # Calculate statistics
     probabilities = [result['probability'] for result in results]
     mean_prob = np.mean(probabilities)
     stats = {
@@ -97,10 +96,8 @@ def display_batch_results(results):
         "Máxima": max(probabilities)
     }
     
-    # Get overall recommendation based on mean probability
     mean_recommendation, mean_color = get_recommendation(mean_prob)
     
-    # Display overall recommendation first
     st.markdown(f"""
         <div style='background-color: {mean_color}20;
                     border-left: 5px solid {mean_color};
@@ -112,9 +109,8 @@ def display_batch_results(results):
         </div>
     """, unsafe_allow_html=True)
     
-    # Statistics cards - matching your single result style
     st.subheader("Estatísticas do Lote")
-    cols = st.columns(3)  # Changed to 3 columns since we have 3 stats now
+    cols = st.columns(3)
     for (name, value), col in zip(stats.items(), cols):
         with col:
             st.markdown(f"""
@@ -128,15 +124,12 @@ def display_batch_results(results):
                 </div>
             """, unsafe_allow_html=True)
 
-    # Detailed results expander
     with st.expander("Ver Resultados Detalhados ({} imagens)".format(len(results)), expanded=False):
         for result in results:
-            # Determine risk class and color
             risk_class, color = ("high-risk", "#e74a3b") if result['probability'] >= 0.8 else \
                                ("moderate-risk", "#f6c23e") if result['probability'] >= 0.5 else \
                                ("low-risk", "#1cc88a")
             
-            # Create a container for each result
             st.markdown(f"""
                 <div style='background-color: {color}20; 
                             border-left: 5px solid {color}; 
