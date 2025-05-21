@@ -1,5 +1,6 @@
 from backend.retinopathy_analyzer import RetinopathyAnalyzer
 from backend.preprocess import resize_and_center_fundus_in_memory
+from io import BytesIO
 from PIL import Image, UnidentifiedImageError
 import streamlit as st
 import base64
@@ -23,6 +24,11 @@ def get_base64_of_image(image_path):
     except FileNotFoundError:
         st.warning("Logo não encontrada.")
         return ""
+
+def image_to_base64(image):
+    buffered = BytesIO()
+    image.save(buffered, format="PNG")
+    return base64.b64encode(buffered.getvalue()).decode()
 
 def apply_theme():
     css_file = "styles/dark.css" if st.session_state.theme == "dark" else "styles/light.css"
@@ -65,11 +71,11 @@ def analyze_single_image(pil_image, analyzer):
 
 def get_recommendation(probability):
     if probability >= 0.8:
-        return "🔴 **Alta recomendação de encaminhamento.**", "#ef4444"
+        return "🔴 Alta recomendação de encaminhamento.", "#ef4444"
     elif 0.5 <= probability < 0.8:
-        return "🟠 **Recomendação moderada de encaminhamento.**", "#f59e0b"
+        return "🟠 Recomendação moderada de encaminhamento.", "#f59e0b"
     else:
-        return "🟢 **Baixa recomendação de encaminhamento.**", "#22c55e"
+        return "🟢 Baixa recomendação de encaminhamento.", "#22c55e"
 
 def display_single_result(prob):
     recommendation, color = get_recommendation(prob)
@@ -82,40 +88,60 @@ def display_single_result(prob):
     """, unsafe_allow_html=True)
 
 def display_batch_results(results):
+    # Calculate statistics
     probabilities = [result['probability'] for result in results]
     stats = {
         "Média": np.mean(probabilities),
-        "Mediana": np.median(probabilities),
         "Mínima": min(probabilities),
         "Máxima": max(probabilities)
     }
     
+    # Statistics cards - matching your single result style
     st.subheader("Estatísticas do Lote")
     cols = st.columns(4)
     for (name, value), col in zip(stats.items(), cols):
         with col:
-            st.metric(name, f"{value:.2%}")
+            st.markdown(f"""
+                <div style='background-color: #f8f9fa; 
+                            border-left: 4px solid #4e73df; 
+                            padding: 12px; 
+                            border-radius: 8px;
+                            height: 100%;'>
+                    <div style='font-size: 0.8rem; color: #6c757d;'>{name}</div>
+                    <div style='font-size: 1.2rem; font-weight: bold;'>{value:.2%}</div>
+                </div>
+            """, unsafe_allow_html=True)
 
-    with st.expander("🔍 Ver Resultados Detalhados", expanded=False):
+    # Detailed results expander
+    with st.expander("Ver Resultados Detalhados ({} imagens)".format(len(results)), expanded=False):
         for result in results:
-            risk_class = "high-risk" if result['probability'] >= 0.8 else \
-                       "moderate-risk" if result['probability'] >= 0.5 else "low-risk"
+            # Determine risk class and color
+            risk_class, color = ("high-risk", "#e74a3b") if result['probability'] >= 0.8 else \
+                               ("moderate-risk", "#f6c23e") if result['probability'] >= 0.5 else \
+                               ("low-risk", "#1cc88a")
             
-            with st.container():
-                st.markdown("<div class='result-container'>", unsafe_allow_html=True)
-                cols = st.columns([1, 3])
-                with cols[0]:
-                    st.image(result['image'], use_container_width=True)
-                with cols[1]:
-                    st.markdown(f"""
-                        <div class='result-info'>
-                            <strong>{result['filename']}</strong><br>
-                            <span class='{risk_class}'>
-                                Probabilidade: <strong>{result['probability']:.2%}</strong>
-                            </span>
+            # Create a container for each result
+            st.markdown(f"""
+                <div style='background-color: {color}20; 
+                            border-left: 5px solid {color}; 
+                            padding: 15px; 
+                            border-radius: 8px;
+                            margin-bottom: 15px;'>
+                    <div style='display: flex; gap: 20px; align-items: center;'>
+                        <div style='flex: 1;'>
+                            <img src='data:image/png;base64,{image_to_base64(result['image'])}' 
+                                 style='width: 100%; border-radius: 6px;'/>
                         </div>
-                    """, unsafe_allow_html=True)
-                st.markdown("</div>", unsafe_allow_html=True)
+                        <div style='flex: 3;'>
+                            <h4 style='margin-top: 0;'>{result['filename']}</h4>
+                            <div style='font-size: 1.1rem;'>
+                                Probabilidade: <strong style='color: {color};'>{result['probability']:.2%}</strong>
+                            </div>
+                            {get_recommendation(result['probability'])[0]}
+                        </div>
+                    </div>
+                </div>
+            """, unsafe_allow_html=True)
 
 # ============================ INITIALIZATION ============================
 initialize_states()
@@ -162,9 +188,6 @@ if uploaded_files:
         for i, file in enumerate(valid_files[:4]):
             with preview_cols[i % 4]:
                 st.image(Image.open(file), use_container_width=True)
-        
-        if len(valid_files) > 4:
-            st.info(f"+ {len(valid_files)-4} imagens adicionais")
 
 # ============================ MODEL & ANALYSIS ============================
 @st.cache_resource
