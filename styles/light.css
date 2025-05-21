@@ -1,146 +1,185 @@
-/* General Styling */
-#MainMenu, header, footer { visibility: hidden; }
-body, .stApp {
-    background-color: #ffffff; /* Light background */
-    color: #1f2937; /* Dark text for readability */
-}
-
-/* Main content area */
-.main {
-    background-color: #f5f7fa; /* Light gray for content */
-    padding: 20px;
-    border-radius: 10px;
-}
-
-/* Titles and Headers */
-.title {
-    color: #1e3a8a; /* Dark blue for titles */
-    font-weight: bold;
-}
-.subheader {
-    color: #1f2937; /* Subtle blue-gray for subheadings */
-}
-
-/* Button Analisar Imagem */
-.stButton>button {
-    background-color: #1e3a8a !important; /* Dark blue for buttons */
-    color: white;
-    border-radius: 8px;
-    padding: 10px 20px;
-    font-weight: bold;
-    transition: background-color 0.3s ease;
-}
-.stButton>button:hover {
-    background-color: #3b82f6  !important; /* Slight hover effect */
-    border-color: #ffffff !important; 
-    color: white ;
-}
-
-.stButton>button:focus {
-    background-color: #3b82f6; /* Slight hover effect */
-    border-color: #3b82f6 !important; 
-    color: #ffffff;
-}
-
-.stButton>button:focus:not(:active){
-    color:#3b82f6 !important;
-}
-
-/* Sobscrevi o button Browse files usando a class dinamica,  */
-/* button[class^="st-emotion-cache-"]:hover {
-    border-color: rgb(0, 0, 0) !important;
-    color: rgb(0, 0, 0) !important;
-    /* background-color: #ffffff !important; }*/
-
-
-/* File Uploader */
-.stFileUploader {
-    border: 2px dashed #d1d5db;
-    border-radius: 10px;
-    padding: 10px;
-    background-color: #ffffff; /* White background for uploader */
-}
-
-/* File Uploader Text */
-.stFileUploader label {
-    color: #1f2937 !important;
-    font-weight: bold;
-}
-
-/* File Uploader Icon (updated for visibility) */
-.stFileUploader svg {
-    /* fill: #1e3a8a !important; Dark blue for icon to stand out */
-    width: 30px !important; /* Icon size */
-    height: 30px !important; /* Icon size */
-}
-
-/* Image Preview */
-.image-preview {
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    max-width: 100px !important;
-    width: 100% !important;
-    margin: 0 auto !important;
-    display: block !important;
-}
-
-/* Success & Error Messages */
-.error-message {
-    background-color: #fee2e2; /* Light red for error messages */
-    color: #9b2c2c; /* Darker text for error messages */
-    padding: 10px;
-    border-radius: 8px;
-}
-.success-message {
-    background-color: #d1fae5; /* Light green for success messages */
-    color: #064e3b; /* Dark text for success messages */
-    padding: 10px;
-    border-radius: 8px;
-}
-
-/* Image Display */
-div[data-testid="stImage"] {
-    display: flex !important;
-    justify-content: center !important;
-    align-items: center !important;
-}
-div[data-testid="stImage"] img {
-    max-width: 150px !important;
-    width: 100% !important;
-    height: auto !important;
-    margin: 0 auto !important;
-    display: block !important;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-}
-
-/* Markdown Styles */
-.markdown {
-    color: #1f2937; /* Dark text for readability */
-}
-
-/* Headers */
-.markdown h1, .markdown h2, .markdown h3, .markdown h4, .markdown h5, .markdown h6 {
-    color: #1e3a8a; /* Dark blue headers for contrast */
-    font-weight: bold;
-}
-
-/* Links */
-.markdown a {
-    color: #3b82f6; /* Blue links for contrast */
-    text-decoration: none;
-}
-.markdown a:hover {
-    color: #2563eb; /* Darker blue on hover */
-}
-
-/* Code Snippets */
-.markdown pre, .markdown code {
-    background-color: #f3f4f6; /* Light background for code blocks */
-    color: #1f2937; /* Dark text for code */
-    border-radius: 5px;
-    padding: 5px 10px;
-}
-.markdown pre {
-    padding: 10px;
-}
+/* ============== BASE STYLES ============== */
+:root {
+    /* Medical Color Palette */
+    --primary: #1a56db;       /* Deep medical blue */
+    --primary-hover: #1e4bbb;
+    --primary-light: #e0f2fe;
+    --text: #111827;         /* High contrast dark gray */
+    --text-light: #4b5563;
+    --bg: #f3f4f6;           /* Soft gray background */
+    --bg-secondary: #ffffff;  /* Pure white containers */
+    --border: #d1d5db;       /* Neutral borders */
+    
+    /* Clinical Status Colors */
+    --low-risk: #047857;     /* Deep green */
+    --low-risk-bg: #d1fae5;
+    --moderate-risk: #b45309; /* Amber */
+    --moderate-risk-bg: #fef3c7;
+    --high-risk: #b91c1c;    /* Deep red */
+    --high-risk-bg: #fee2e2;
+    
+    /* Metrics */
+    --radius: 10px;          /* Slightly larger radius */
+    --shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    --transition: all 0.25s ease;
+  }
+  
+  /* ============== LAYOUT IMPROVEMENTS ============== */
+  body, .stApp {
+    background-color: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', system-ui, sans-serif;
+    line-height: 1.6;
+  }
+  
+  /* ============== TYPOGRAPHY ENHANCEMENTS ============== */
+  .title {
+    color: var(--primary);
+    font-weight: 700;
+    font-size: 1.9rem;
+    margin-bottom: 0.75rem;
+    letter-spacing: -0.025em;
+  }
+  
+  .subheader {
+    color: var(--text-light);
+    font-weight: 500;
+    font-size: 1.05rem;
+    margin-bottom: 1.75rem;
+  }
+  
+  /* ============== COMPONENT REFINEMENTS ============== */
+  /* Main Container */
+  .main {
+    background-color: var(--bg-secondary);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 2rem;
+    margin: 0 auto;
+    max-width: 1200px;
+    border: 1px solid var(--border);
+  }
+  
+  /* Metrics Cards - Improved Contrast */
+  .stMetric {
+    background-color: var(--bg-secondary) !important;
+    border: 1px solid var(--border) !important;
+    border-radius: var(--radius) !important;
+    padding: 1.25rem !important;
+    box-shadow: var(--shadow) !important;
+  }
+  
+  .stMetricLabel {
+    color: var(--text) !important;  /* Darker for better contrast */
+    font-weight: 600 !important;
+    font-size: 0.95rem !important;
+  }
+  
+  .stMetricValue {
+    color: var(--primary) !important;
+    font-weight: 700 !important;
+    font-size: 1.6rem !important;
+  }
+  
+  /* Buttons - More Prominent */
+  .stButton>button {
+    background-color: var(--primary) !important;
+    color: white !important;
+    border-radius: var(--radius) !important;
+    padding: 0.75rem 1.5rem !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.025em;
+    transition: var(--transition) !important;
+    border: none !important;
+    box-shadow: 0 2px 4px rgba(26, 86, 219, 0.15) !important;
+  }
+  
+  .stButton>button:hover {
+    background-color: var(--primary-hover) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 6px rgba(26, 86, 219, 0.15) !important;
+  }
+  
+  /* File Uploader - Better Visibility */
+  .stFileUploader {
+    border: 2px dashed var(--primary) !important;
+    background-color: rgba(224, 242, 254, 0.3) !important;
+    transition: var(--transition) !important;
+  }
+  
+  .stFileUploader:hover {
+    background-color: var(--primary-light) !important;
+  }
+  
+  /* Images - Better Framing */
+  div[data-testid="stImage"] img {
+    max-width: 100% !important;
+    border: 1px solid var(--border) !important;
+    background-color: var(--bg-secondary) !important;
+    padding: 0.75rem !important;
+    box-shadow: var(--shadow) !important;
+  }
+  
+  /* Results Containers - Clearer Separation */
+  .result-container {
+    background-color: var(--bg-secondary) !important;
+    border: 1px solid var(--border) !important;
+    border-radius: var(--radius) !important;
+    padding: 1.5rem !important;
+    margin-bottom: 1.25rem !important;
+    box-shadow: var(--shadow) !important;
+  }
+  
+  /* Risk Indicators - More Distinct */
+  .risk-badge {
+    padding: 0.375rem 0.75rem !important;
+    border-radius: 6px !important;
+    font-weight: 600 !important;
+    font-size: 0.95rem !important;
+    display: inline-flex;
+    align-items: center;
+  }
+  
+  /* Status Messages - More Visible */
+  .error-message {
+    border-left: 5px solid var(--high-risk) !important;
+    background-color: rgba(185, 28, 28, 0.05) !important;
+  }
+  
+  .success-message {
+    border-left: 5px solid var(--low-risk) !important;
+    background-color: rgba(4, 120, 87, 0.05) !important;
+  }
+  
+  /* ============== SPECIFIC FIXES FOR WHITE TEXT ============== */
+  /* Ensure all text is visible against backgrounds */
+  .stMarkdown, .stText, .stAlert, .stExpander {
+    color: var(--text) !important;
+  }
+  
+  /* Fix for metric text visibility */
+  .stMetric > div > div {
+    color: var(--text) !important;
+  }
+  
+  /* Table text contrast */
+  .stTable {
+    color: var(--text) !important;
+  }
+  
+  /* ============== UTILITY CLASSES ============== */
+  .text-primary {
+    color: var(--primary) !important;
+  }
+  
+  .bg-secondary {
+    background-color: var(--bg-secondary) !important;
+  }
+  
+  .rounded-lg {
+    border-radius: var(--radius) !important;
+  }
+  
+  .shadow-sm {
+    box-shadow: var(--shadow) !important;
+  }
