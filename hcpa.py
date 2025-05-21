@@ -90,15 +90,31 @@ def display_single_result(prob):
 def display_batch_results(results):
     # Calculate statistics
     probabilities = [result['probability'] for result in results]
+    mean_prob = np.mean(probabilities)
     stats = {
-        "Média": np.mean(probabilities),
+        "Média": mean_prob,
         "Mínima": min(probabilities),
         "Máxima": max(probabilities)
     }
     
+    # Get overall recommendation based on mean probability
+    mean_recommendation, mean_color = get_recommendation(mean_prob)
+    
+    # Display overall recommendation first
+    st.markdown(f"""
+        <div style='background-color: {mean_color}20;
+                    border-left: 5px solid {mean_color};
+                    padding: 16px;
+                    border-radius: 8px;
+                    margin-bottom: 20px;
+                    font-size: 1.1rem;'>
+            <strong>Recomendação Geral do Lote:</strong> {mean_recommendation}
+        </div>
+    """, unsafe_allow_html=True)
+    
     # Statistics cards - matching your single result style
     st.subheader("Estatísticas do Lote")
-    cols = st.columns(4)
+    cols = st.columns(3)  # Changed to 3 columns since we have 3 stats now
     for (name, value), col in zip(stats.items(), cols):
         with col:
             st.markdown(f"""
