@@ -70,10 +70,8 @@ def analyze_single_image(pil_image, analyzer):
             return None
 
 def get_recommendation(probability):
-    if probability >= 0.6:
+    if probability > 0.5:
         return "🔴 Alta recomendação de encaminhamento.", "#ef4444"
-    elif 0.4 <= probability < 0.6:
-        return "🟠 Recomendação moderada de encaminhamento.", "#f59e0b"
     else:
         return "🟢 Baixa recomendação de encaminhamento.", "#22c55e"
 
