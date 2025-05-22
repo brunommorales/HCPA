@@ -125,7 +125,6 @@ def display_batch_results(results):
     with st.expander("Ver Resultados Detalhados ({} imagens)".format(len(results)), expanded=False):
         for result in results:
             risk_class, color = ("high-risk", "#e74a3b") if result['probability'] >= 0.8 else \
-                               ("moderate-risk", "#f6c23e") if result['probability'] >= 0.5 else \
                                ("low-risk", "#1cc88a")
             
             st.markdown(f"""
